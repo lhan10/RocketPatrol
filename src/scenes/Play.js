@@ -17,6 +17,7 @@ class Play extends Phaser.Scene{
             endFrame: 9
         });
     }
+    
     create() {
         // place startfield
         this.starfield = this.add.tileSprite(0, 0, game.config.width, game.config.height,
@@ -84,8 +85,17 @@ class Play extends Phaser.Scene{
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize
         + borderPadding*2, this.p1Score, scoreConfig);
-    }
+        
 
+
+        // 60-second play clock
+        scoreConfig.fixedWidth = 0;
+        this.clock = this.time.delayedCall(10000,() => {
+            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER',
+            scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 +64,
+            '(F)ire to Restart', scoreConfig).setOrigin(0.5);}, null, this);
+    }
     update() {
         this.starfield.tilePositionX -= 4;
 
@@ -135,6 +145,8 @@ class Play extends Phaser.Scene{
             ship.alpha = 1;                     //make ship visiable again
             boom.destroy();                     //remove explosion sprite
         });
-
+        // score add and repaint
+        this.p1Score += ship.points;
+        this.scoreLeft.text = this.p1Score;
     }
 }
